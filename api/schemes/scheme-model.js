@@ -150,22 +150,22 @@ async function findSteps(scheme_id) { // EXERCISE C
       ]
   */
 
-    const results = await db('schemes as sc')
-      .leftJoin('steps as st', 'sc.scheme_id', 'st.scheme_id')
-      .select('st.step_id', 'st.step_number', 'instructions', 'sc.scheme_name')
-      .where('sc.scheme_id', scheme_id)
-      .orderBy('st.step_number')
-      if(!results[0].step_id) return []
-      else{
-        return results
-      }
+      const results = await db("schemes as sc")
+      .leftJoin("steps as st", "sc.scheme_id", "st.scheme_id" )
+      .select("st.step_id", "st.step_number", "instructions", "sc.scheme_name")
+      .where("sc.scheme_id", scheme_id)
+      .orderBy("step_number")
+
+  if (!results[0].step_id) return []
+  return results
 }
 
-function add(scheme) { // EXERCISE D
-  return db('schemes').insert(scheme)
-  .then(([id])=>{
-    return db('schemes').where('id', id)
-  })
+
+function add(scheme) {
+  return db("schemes").insert(scheme)
+      .then(([scheme_id]) => {
+        return db("schemes").where("scheme_id", scheme_id).first()
+      })
 }
 
 function addStep(scheme_id, step) { // EXERCISE E
@@ -174,6 +174,17 @@ function addStep(scheme_id, step) { // EXERCISE E
     and resolves to _all the steps_ belonging to the given `scheme_id`,
     including the newly created one.
   */
+ return db('steps').insert({
+   ...step, 
+   scheme_id
+ })
+ .then(()=>{
+  return db('steps as st')
+  .join('schemes as sc', 'sc.scheme_id','st.scheme_id')
+  .select('st.step_id', 'st.step_number', 'instructions','scheme_name')
+  .where('sc.scheme_id', scheme_id)
+  .orderBy('step_number')
+ })
 }
 
 module.exports = {
