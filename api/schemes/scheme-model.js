@@ -15,6 +15,10 @@ function find() { // EXERCISE A
     2A- When you have a grasp on the query go ahead and build it in Knex.
     Return from this function the resulting dataset.
   */
+  const result = await db('schemes as sc')
+  .leftjoin('steps as st, sc.scheme_id, st.scheme_id')
+  .select('st.id ')
+
 }
 
 function findById(scheme_id) { // EXERCISE B
