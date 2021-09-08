@@ -22,6 +22,7 @@
     .select('sc.*')
     .count('st.step_id as number_of_steps')
     .groupBy('sc.scheme_id')
+    .orderBy('sc.scheme_id', 'asc')
   
 }
 
@@ -115,7 +116,7 @@ async function findById(scheme_id) { // EXERCISE B
       steps:[]
 
     }
-    results.map(res => {
+    results.forEach(res => {
       if (res.step_id ){
         result.steps.push({
           step_id: res.step_id,
@@ -161,9 +162,10 @@ async function findSteps(scheme_id) { // EXERCISE C
 }
 
 function add(scheme) { // EXERCISE D
-  /*
-    1D- This function creates a new scheme and resolves to _the newly created scheme_.
-  */
+  return db('schemes').insert(scheme)
+  .then(([id])=>{
+    return db('schemes').where('id', id)
+  })
 }
 
 function addStep(scheme_id, step) { // EXERCISE E
